@@ -1,12 +1,12 @@
 window.addEventListener('DOMContentLoaded', () => {
 
     // Récuperation des champs du formulaire
-    const nomInput = document.getElementById('labo-nom');
-    const descriptionInput = document.getElementById('labo-description');
-    const adresseInput = document.getElementById('labo-localisation');
-    const photoInput = document.getElementById('labo-photo');
-    const frmAddLabo = document.getElementById('addlaboForm');
-    const btnAjouter = frmAddLabo.querySelector('button[type="submit"]');
+    const nomInput = document.getElementById('equipement-nom');
+    const descriptionInput = document.getElementById('equipement-description');
+    const statutInput = document.getElementById('equipement-statut');
+    const laboInput = document.getElementById('labo');
+    const frmAdEquipement = document.getElementById('addEquipementForm');
+    const btnAjouter = frmAdEquipement.querySelector('button[type="submit"]');
 
     // Désactiver le bouton Ajouter
     btnAjouter.disabled = true;
@@ -61,58 +61,62 @@ window.addEventListener('DOMContentLoaded', () => {
         checkFormValidaty();
     });
 
-    // Validation du champ adresse à la saisie
-    adresseInput.addEventListener('input', () => {
-        const adresse = adresseInput.value.trim();
-        const adresseValidator = Validator.addressValidator("L'adresse", 2, 50, adresse);
+    // Validation du champ type à la selection
+    statutInput.addEventListener('change', () => {
 
-        if (adresseValidator)
+        if (statutInput.value === "")
         {
-            showError(adresseInput, adresseValidator.message);
-
+            showError(statutInput, 'Veuillez selectionner un statut.');
         } else
         {
-            showError(adresseInput, "");
+            showError(statutInput, "");
         }
-
         checkFormValidaty();
     });
 
-    // Validation du champ photo à la selection
-    photoInput.addEventListener('change', () => {
-        const photo = photoInput.files[0];
-        
-        if (!photo) 
-        {
-            showError(photoInput, 'La photo est obligatoire.');
-            
-        } else if (!photo.type.startsWith('image/')) {
-            showError(photoInput, 'Le fichier doit être une image.');
-        } else 
-        {
-            showError(photoInput, "");
+    // Validation des laboratoires associés
+    const laboCheckboxes = document.querySelectorAll('input[name="laboratoires[]"]');
+    const laboErrorMessage = document.querySelector('input[name="laboratoires[]"]').closest('.mb-3').querySelector('.error-message');
+
+    function validateLaboSelection() {
+        const isAnyChecked = Array.from(laboCheckboxes).some(cb => cb.checked);
+
+        if (!isAnyChecked) {
+            laboErrorMessage.textContent = "Veuillez sélectionner au moins un laboratoire.";
+            laboErrorMessage.classList.add('text-danger', 'fw-bold', 'small');
+        } else {
+            laboErrorMessage.textContent = "";
+            laboErrorMessage.classList.remove('text-danger', 'fw-bold', 'small');
         }
 
         checkFormValidaty();
+    }
+
+    // Ajouter un écouteur sur chaque checkbox
+    laboCheckboxes.forEach(cb => {
+        cb.addEventListener('change', validateLaboSelection);
     });
+
+
 
     // Activer le bouton Ajouter si les champs sont valides
     function checkFormValidaty()
     {
         const nom = nomInput.value.trim();
         const description = descriptionInput.value.trim();
-        const adresse = adresseInput.value.trim();
+        const statut = statutInput.value.trim();
 
         const isNameValid = Validator.nameValidator("Le nom", 5, 50, nom) == null;
         const isDescriptionValid = description.length === 0 || Validator.nameValidator("La description", 5, 500, description) == null;
-        const isAdresseValid = Validator.addressValidator("La localisation", 2, 50, adresse) == null;
+        const isstatutValid = statut !== "";
+        const isLaboValid = Array.from(laboCheckboxes).some(cb => cb.checked);
 
-        btnAjouter.disabled = !(isNameValid && isDescriptionValid && isAdresseValid);
+        btnAjouter.disabled = !(isNameValid && isDescriptionValid && isstatutValid && isLaboValid);
     }
 
 
     // Desactiver le bouton ajouter apres cliquer sur annuler
-    frmAddLabo.addEventListener('reset', () => {
+    frmAdEquipement.addEventListener('reset', () => {
         btnAjouter.disabled = true;
     });
 

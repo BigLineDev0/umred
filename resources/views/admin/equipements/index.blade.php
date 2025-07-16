@@ -137,9 +137,10 @@
 
                         <!-- Nom -->
                         <div class="mb-3">
-                            <label for="equipement-nom" class="form-label">Nom de l’équipement</label>
+                            <label for="equipement-nom" class="form-label">Nom de l’équipement <span class="text-danger">*</span></label>
                             <input type="text" name="nom" class="form-control" id="equipement-nom"
                                 placeholder="Ex : Spectrophotomètre UV" required>
+                            <p class="error-message mt-2"></p>
                             <div class="text-danger small">
                                 @error('nom')
                                     {{ $message }}
@@ -152,6 +153,7 @@
                             <label for="equipement-description" class="form-label">Description</label>
                             <textarea name="description" class="form-control" id="equipement-description" rows="3"
                                 placeholder="Description détaillée de l’équipement..."></textarea>
+                            <p class="error-message mt-2"></p>
                             <div class="text-danger small">
                                 @error('description')
                                     {{ $message }}
@@ -161,13 +163,14 @@
 
                         <!-- Statut -->
                         <div class="mb-3">
-                            <label for="equipement-statut" class="form-label">Statut</label>
+                            <label for="equipement-statut" class="form-label">Statut <span class="text-danger">*</span></label>
                             <select name="statut" id="equipement-statut" class="form-control" required>
                                 <option value="">-- Sélectionner un statut --</option>
                                 <option value="disponible">Disponible</option>
                                 <option value="reserve">Réservé</option>
                                 <option value="maintenance">Maintenance</option>
                             </select>
+                            <p class="error-message mt-2"></p>
                             <div class="text-danger small">
                                 @error('statut')
                                     {{ $message }}
@@ -177,7 +180,7 @@
 
                         <!-- Laboratoires associés -->
                         <div class="mb-3">
-                            <label class="form-label">Laboratoires associés</label>
+                            <label class="form-label">Laboratoires associés <span class="text-danger">*</span></label>
                             <div class="border rounded p-2" style="max-height: 200px; overflow-y: auto;">
                                 @foreach ($laboratoires as $laboratoire)
                                     <div class="form-check">
@@ -189,6 +192,7 @@
                                     </div>
                                 @endforeach
                             </div>
+                            <p class="error-message mt-2"></p>
                             <div class="text-danger small mt-1">
                                 @error('laboratoires')
                                     {{ $message }}
@@ -198,7 +202,7 @@
 
                         <!-- Boutons -->
                         <div class="text-center">
-                            <button type="submit" class="btn btn-primary fw-bold">Ajouter</button>
+                            <button type="submit" id="btnAddEquipement" class="btn btn-primary fw-bold">Ajouter</button>
                             <button type="reset" class="btn btn-danger fw-bold ml-2">Annuler</button>
                         </div>
                     </form>
@@ -228,8 +232,9 @@
 
                         <!-- Nom -->
                         <div class="mb-3">
-                            <label for="edit-equipement-nom" class="form-label">Nom</label>
+                            <label for="edit-equipement-nom" class="form-label">Nom <span class="text-danger">*</span></label>
                             <input type="text" name="nom" id="edit-equipement-nom" class="form-control" required>
+                            <p class="error-message mt-2"></p>
                             <div class="text-danger small">
                                 @error('nom')
                                     {{ $message }}
@@ -241,6 +246,7 @@
                         <div class="mb-3">
                             <label for="edit-equipement-description" class="form-label">Description</label>
                             <textarea name="description" id="edit-equipement-description" class="form-control" rows="3"></textarea>
+                            <p class="error-message mt-2"></p>
                             <div class="text-danger small">
                                 @error('description')
                                     {{ $message }}
@@ -250,13 +256,14 @@
 
                         <!-- Statut -->
                         <div class="mb-3">
-                            <label for="edit-equipement-statut" class="form-label">Statut</label>
+                            <label for="edit-equipement-statut" class="form-label">Statut <span class="text-danger">*</span></label>
                             <select name="statut" id="edit-equipement-statut" class="form-control" required>
                                 <option value="">-- Sélectionner un statut --</option>
                                 <option value="disponible">Disponible</option>
                                 <option value="reserve">Réservé</option>
                                 <option value="maintenance">Maintenance</option>
                             </select>
+                            <p class="error-message mt-2"></p>
                             <div class="text-danger small">
                                 @error('statut')
                                     {{ $message }}
@@ -266,7 +273,7 @@
 
                         <!-- Laboratoires -->
                         <div class="mb-3">
-                            <label>Laboratoires associés</label>
+                            <label>Laboratoires associés <span class="text-danger">*</span></label>
                             <div class="border rounded p-2" style="max-height: 200px; overflow-y: auto;">
                                 @foreach ($laboratoires as $laboratoire)
                                     <div class="form-check">
@@ -279,6 +286,7 @@
                                     </div>
                                 @endforeach
                             </div>
+                            <p class="error-message mt-2"></p>
                             <div class="text-danger small">
                                 @error('laboratoires')
                                     {{ $message }}
@@ -350,7 +358,6 @@
             </div>
         </div>
     </div>
-
 
 @endsection
 @include('admin.equipements.scripts')

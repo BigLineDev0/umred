@@ -42,7 +42,6 @@
                         <tr>
                             <th>#</th>
                             <th>Laboratoire</th>
-
                             <th>Date</th>
                             <th>Horaires</th>
                             <th>Statut</th>

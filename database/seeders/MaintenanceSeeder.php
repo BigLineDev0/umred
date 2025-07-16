@@ -18,7 +18,7 @@ class MaintenanceSeeder extends Seeder
     {
         // On récupère des techniciens (par rôle si tu utilises spatie/laravel-permission)
         $techniciens = User::role('technicien')->get();
-        $equipements = Equipement::all();
+        $equipements = Equipement::where('statut', 'maintenance')->get();
 
         if ($techniciens->isEmpty() || $equipements->isEmpty()) {
             $this->command->warn('Aucun technicien ou équipement disponible pour les maintenances.');
@@ -31,8 +31,8 @@ class MaintenanceSeeder extends Seeder
                 'user_id' => $techniciens->random()->id,
                 'equipement_id' => $equipements->random()->id,
                 'description' => 'Maintenance ' . Str::random(10),
-                'date' => now()->addDays(rand(-10, 10)),
-                'statut' => collect(['planifiée', 'en_cours', 'terminée', 'reportée'])->random(),
+                'date_prevue' => now()->addDays(rand(-10, 10)),
+                'statut' => collect(['en_cours', 'terminée'])->random(),
             ]);
         }
     }

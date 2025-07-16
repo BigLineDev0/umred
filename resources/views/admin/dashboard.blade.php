@@ -39,6 +39,20 @@
                 </div>
             </div>
 
+            <!-- Réservations confimées -->
+            <div class="col-xl-3 col-md-6">
+                <div class="widget widget-stats bg-success">
+                    <div class="stats-icon"><i class="fa fa-check"></i></div>
+                    <div class="stats-info">
+                        <h4>Réservations confirmées</h4>
+                        <p>{{ $stats['confirmed_reservations'] }}</p>
+                    </div>
+                    <div class="stats-link">
+                        <a href="{{ route('admin.reservations.index') }}">Voir <i class="fa fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
             <!-- Réservations en attente -->
             <div class="col-xl-3 col-md-6">
                 <div class="widget widget-stats bg-warning">
@@ -53,6 +67,34 @@
                 </div>
             </div>
 
+            <!-- Réservations en annulées -->
+            <div class="col-xl-3 col-md-6">
+                <div class="widget widget-stats bg-danger">
+                    <div class="stats-icon"><i class="fa fa-times"></i></div>
+                    <div class="stats-info">
+                        <h4>Réservations annulées</h4>
+                        <p>{{ $stats['cancelled_reservations'] }}</p>
+                    </div>
+                    <div class="stats-link">
+                        <a href="{{ route('admin.reservations.index') }}">Voir <i class="fa fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Maintenances terminées -->
+            <div class="col-xl-3 col-md-6">
+                <div class="widget widget-stats bg-success">
+                    <div class="stats-icon"><i class="fa fa-tools"></i></div>
+                    <div class="stats-info">
+                        <h4>Maintenances terminées</h4>
+                        <p>{{ $stats['terminees_maintenances'] }}</p>
+                    </div>
+                    <div class="stats-link">
+                        <a href="{{ route('admin.maintenances.index') }}">Voir <i class="fa fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
             <!-- Maintenances actives -->
             <div class="col-xl-3 col-md-6">
                 <div class="widget widget-stats bg-danger">
@@ -62,7 +104,7 @@
                         <p>{{ $stats['active_maintenances'] }}</p>
                     </div>
                     <div class="stats-link">
-                        <a href="">Voir <i class="fa fa-arrow-circle-right"></i></a>
+                        <a href="{{ route('admin.maintenances.index') }}">Voir <i class="fa fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
             </div>
@@ -76,7 +118,7 @@
                         <p>{{ $stats['admins'] }}</p>
                     </div>
                     <div class="stats-link">
-                        <a href="">Voir <i class="fa fa-arrow-circle-right"></i></a>
+                        <a href="{{ route('admin.utilisateurs.index') }}">Voir <i class="fa fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
             </div>
@@ -118,7 +160,7 @@
                         <p>{{ $stats['available_equipments'] }}</p>
                     </div>
                     <div class="stats-link">
-                        <a href="">Voir <i class="fa fa-arrow-circle-right"></i></a>
+                        <a href="{{ route('admin.equipements.index') }}">Voir <i class="fa fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
             </div>
@@ -132,24 +174,57 @@
                         <p>{{ $stats['occupied_equipments'] }}</p>
                     </div>
                     <div class="stats-link">
-                        <a href="">Voir <i class="fa fa-arrow-circle-right"></i></a>
+                        <a href="{{ route('admin.equipements.index') }}">Voir <i class="fa fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
             </div>
 
-            <!-- Dernières Réservations -->
+            <!-- Réservations du Jour -->
             <div class="col-md-6">
                 <div class="alert alert-info">
-                    <h5 class="mb-3">Dernières Réservations</h5>
+                    <h5 class="mb-3">Réservations du Jour : {{ \Carbon\Carbon::now()->format('d/m/Y') }}</h5>
                     <ul class="list-unstyled mb-0">
-                        @foreach ($recent_reservations as $reservation)
+                        @php
+                            $today = \Carbon\Carbon::now()->toDateString();
+                            $today_reservations = $recent_reservations->filter(function($reservation) use ($today) {
+                                return \Carbon\Carbon::parse($reservation->date)->toDateString() === $today;
+                            });
+                        @endphp
+                        @forelse ($today_reservations as $reservation)
                             <li class="mb-1">
                                 <strong>{{ $reservation->user->prenom }} {{ $reservation->user->name }}</strong> —
                                 {{ $reservation->date }}
                                 <span
                                     class="badge badge-{{ $reservation->statut == 'en_attente' ? 'warning' : 'success' }}">{{ $reservation->statut }}</span>
                             </li>
-                        @endforeach
+                        @empty
+                            <li>Aucune réservation pour aujourd'hui.</li>
+                        @endforelse
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Dernières Interventions de Maintenance du Jour -->
+            <div class="col-md-6">
+                <div class="alert alert-info">
+                    <h5 class="mb-3">Interventions de Maintenance du Jour : {{ \Carbon\Carbon::now()->format('d/m/Y') }}</h5>
+                    <ul class="list-unstyled mb-0">
+                        @php
+                            $today = \Carbon\Carbon::now()->toDateString();
+                            $today_maintenances = $recent_maintenances->filter(function($maintenance) use ($today) {
+                                return \Carbon\Carbon::parse($maintenance->date)->toDateString() === $today;
+                            });
+                        @endphp
+                        @forelse ($today_maintenances as $maintenance)
+                            <li class="mb-1">
+                                <strong>{{ $maintenance->user->prenom ?? '' }} {{ $maintenance->user->name ?? '' }}</strong> —
+                                {{ $maintenance->date_prevue->format('d/m/Y') }}
+                                <span
+                                    class="badge badge-{{ $maintenance->statut == 'en_cours' ? 'warning' : 'success' }}">{{ $maintenance->statut }}</span>
+                            </li>
+                        @empty
+                            <li>Aucune intervention de maintenance pour aujourd'hui.</li>
+                        @endforelse
                     </ul>
                 </div>
             </div>

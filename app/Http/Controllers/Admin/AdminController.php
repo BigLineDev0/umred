@@ -20,9 +20,12 @@ class AdminController extends Controller
             'total_laboratories' => Laboratoire::count(),
             'total_equipments' => Equipement::count(),
             'pending_reservations' => Reservation::where('statut', 'en_attente')->count(),
+            'confirmed_reservations' => Reservation::where('statut', 'confirmée')->count(),
+            'cancelled_reservations' => Reservation::where('statut', 'annulée')->count(),
             'active_maintenances' => Maintenance::where('statut', 'en_cours')->count(),
+            'terminees_maintenances' => Maintenance::where('statut', 'terminée')->count(),
             'available_equipments' => Equipement::where('statut', 'disponible')->count(),
-            'occupied_equipments' => Equipement::where('statut', 'indisponible')->count(),
+            'occupied_equipments' => Equipement::where('statut', 'maintenance')->count(),
 
             // Comptage par rôle grâce à Laravel Permission
             'admins'      => User::role('admin')->count(),
@@ -31,11 +34,13 @@ class AdminController extends Controller
         ];
 
         $recent_reservations = Reservation::with(['user', 'equipement'])
+            ->whereDate('created_at', now()->toDateString())
             ->latest()
             ->take(5)
             ->get();
 
         $recent_maintenances = Maintenance::with(['user', 'equipement'])
+            ->whereDate('created_at', now()->toDateString())
             ->latest()
             ->take(5)
             ->get();

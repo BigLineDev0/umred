@@ -43,11 +43,11 @@
         </div>
 
         <div class="col-xl-3 col-md-6">
-            <div class="widget widget-stats bg-primary">
+            <div class="widget widget-stats bg-danger">
                 <div class="stats-icon"><i class="fa fa-cogs"></i></div>
                 <div class="stats-info">
-                    <h4>Équipements Disponibles</h4>
-                    <p>{{ $stats['equipements_disponibles'] }}</p>
+                    <h4>Équipements Maintenances</h4>
+                    <p>{{ $stats['equipements_maintenances'] }}</p>
                 </div>
             </div>
         </div>
@@ -61,11 +61,8 @@
                 <ul class="list-group">
                     @forelse ($recent_maintenances as $maintenance)
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            {{ $maintenance->equipement->nom }} — {{ $maintenance->date->format('d/m/Y') }}
-                            <span class="badge badge-{{
-                                $maintenance->statut === 'en_cours' ? 'warning' :
-                                ($maintenance->statut === 'terminée' ? 'success' :
-                                ($maintenance->statut === 'reportée' ? 'danger' : 'secondary')) }}">
+                            {{ $maintenance->equipement->nom }} — {{ $maintenance->date_prevue->format('d/m/Y') }}
+                            <span class="badge badge-{{ $maintenance->statut === 'en_cours' ? 'warning' : 'success' }}">
                                 {{ ucfirst($maintenance->statut) }}
                             </span>
                         </li>

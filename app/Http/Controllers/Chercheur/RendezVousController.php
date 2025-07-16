@@ -61,17 +61,26 @@ class RendezVousController extends Controller
                 ->select('horaire_reservation.heure_debut', 'horaire_reservation.heure_fin')
                 ->get();
 
-            // Filtrer les horaires disponibles
-            $horaires_disponibles = collect($horaires_base)->filter(function ($horaire) use ($horaires_reserves) {
+            // Créer la liste complète des horaires avec leur statut
+            $horaires_avec_statut = collect($horaires_base)->map(function ($horaire) use ($horaires_reserves) {
+                $est_reserve = false;
+
                 foreach ($horaires_reserves as $reserve) {
                     if ($horaire['debut'] == $reserve->heure_debut && $horaire['fin'] == $reserve->heure_fin) {
-                        return false;
+                        $est_reserve = true;
+                        break;
                     }
                 }
-                return true;
+
+                return [
+                    'debut' => $horaire['debut'],
+                    'fin' => $horaire['fin'],
+                    'disponible' => !$est_reserve,
+                    'statut' => $est_reserve ? 'occupe' : 'libre'
+                ];
             });
 
-            return response()->json($horaires_disponibles->values());
+            return response()->json($horaires_avec_statut->values());
         } catch (\Exception $e) {
             Log::error('Erreur lors de la récupération des horaires: ' . $e->getMessage());
             return response()->json(['error' => 'Erreur serveur'], 500);
@@ -104,6 +113,42 @@ class RendezVousController extends Controller
 
         try {
             DB::beginTransaction();
+
+            // Vérification des conflits en temps réel avant l'enregistrement
+            $conflits = [];
+            foreach ($request->horaires as $horaire_demande) {
+                $conflit_existe = DB::table('reservations')
+                    ->join('horaire_reservation', 'reservations.id', '=', 'horaire_reservation.reservation_id')
+                    ->where('reservations.laboratoire_id', $request->laboratoire_id)
+                    ->where('reservations.date', $request->date)
+                    ->where('horaire_reservation.heure_debut', $horaire_demande['debut'])
+                    ->where('horaire_reservation.heure_fin', $horaire_demande['fin'])
+                    ->whereIn('reservations.statut', ['en_attente', 'confirmée'])
+                    ->exists();
+
+                if ($conflit_existe) {
+                    $conflits[] = $horaire_demande['debut'] . ' - ' . $horaire_demande['fin'];
+                }
+            }
+
+            // Si des conflits sont détectés, arrêter la transaction
+            if (!empty($conflits)) {
+                DB::rollback();
+
+                $message_conflits = 'Les créneaux suivants ne sont plus disponibles : ' . implode(', ', $conflits);
+
+                if ($request->ajax()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $message_conflits,
+                        'type' => 'conflict',
+                        'conflits' => $conflits
+                    ], 409);
+                }
+
+                return back()->withInput()
+                    ->with('error', $message_conflits);
+            }
 
             // Créer la réservation
             $reservation = Reservation::create([
@@ -183,7 +228,8 @@ class RendezVousController extends Controller
             if ($request->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Une erreur est survenue lors de l\'enregistrement de votre réservation: ' . $e->getMessage()
+                    'message' => 'Une erreur est survenue lors de l\'enregistrement de votre réservation: ' . $e->getMessage(),
+                    'type' => 'error'
                 ], 500);
             }
 
@@ -191,7 +237,7 @@ class RendezVousController extends Controller
                 ->with('error', 'Une erreur est survenue lors de l\'enregistrement de votre réservation: ' . $e->getMessage());
         }
     }
-
+    
     /**
      * Afficher les réservations de l'utilisateur connecté
      */

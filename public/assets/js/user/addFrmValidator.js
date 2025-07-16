@@ -1,12 +1,15 @@
 window.addEventListener('DOMContentLoaded', () => {
 
     // Récuperation des champs du formulaire
-    const nomInput = document.getElementById('labo-nom');
-    const descriptionInput = document.getElementById('labo-description');
-    const adresseInput = document.getElementById('labo-localisation');
-    const photoInput = document.getElementById('labo-photo');
-    const frmAddLabo = document.getElementById('addlaboForm');
-    const btnAjouter = frmAddLabo.querySelector('button[type="submit"]');
+    const prenomInput = document.getElementById('user-prenom');
+    const nomInput = document.getElementById('user-nom');
+    const adresseInput = document.getElementById('user-adresse');
+    const telephoneInput = document.getElementById('user-telephone');
+    const emailInput = document.getElementById('user-email');
+    const photoInput = document.getElementById('user-photo');
+    const roleInput = document.getElementById('user-role');
+    const frmAddUser = document.getElementById('addUserForm');
+    const btnAjouter = document.getElementById('btnAddUser');
 
     // Désactiver le bouton Ajouter
     btnAjouter.disabled = true;
@@ -32,7 +35,7 @@ window.addEventListener('DOMContentLoaded', () => {
     // Validation du champ nom à la saisie
     nomInput.addEventListener('input', () => {
         const nom = nomInput.value.trim();
-        const nomValidator = Validator.nameValidator("Le nom", 5, 50, nom);
+        const nomValidator = Validator.nameValidator("Le nom", 2, 50, nom);
 
         if (nomValidator)
         {
@@ -46,16 +49,52 @@ window.addEventListener('DOMContentLoaded', () => {
         checkFormValidaty();
     });
 
-    // Validation du champ description à la saisie
-    descriptionInput.addEventListener('input', () => {
-        const description = descriptionInput.value.trim();
+    // Validation du champ prenom à la saisie
+    prenomInput.addEventListener('input', () => {
+        const prenom = prenomInput.value.trim();
+        const prenomValidator = Validator.nameValidator("Le prénom", 2, 50, prenom);
 
-        if (description.length > 0) {
-            const descriptionValidator = Validator.nameValidator("La description", 5, 500, description);
-            showError(descriptionInput, descriptionValidator ? descriptionValidator.message : "");
-        } else {
+        if (prenomValidator)
+        {
+            showError(prenomInput, prenomValidator.message);
 
-            showError(descriptionInput, "");
+        } else
+        {
+            showError(prenomInput, "");
+        }
+
+        checkFormValidaty();
+    });
+
+    // Validation du champ telephone à la saisie
+    telephoneInput.addEventListener('input', () => {
+        const telephone = telephoneInput.value.trim();
+        const telephoneValidator = Validator.phoneValidator("Le numéro de téléphone", 9, 17, telephone);
+
+        if (telephoneValidator) 
+        {
+            showError(telephoneInput, telephoneValidator.message);
+            
+        } else 
+        {
+            showError(telephoneInput, "");
+        }
+
+        checkFormValidaty();
+    });
+
+    // Validation du champ email à la saisie
+    emailInput.addEventListener('input', () => {
+        const email = emailInput.value.trim();
+        const emailValidator = Validator.emailValidator("L'email", email);
+
+        if (emailValidator) 
+        {
+            showError(emailInput, emailValidator.message);
+            
+        } else 
+        {
+            showError(emailInput, "");
         }
 
         checkFormValidaty();
@@ -96,23 +135,48 @@ window.addEventListener('DOMContentLoaded', () => {
         checkFormValidaty();
     });
 
+     // Validation du champ role à la selection
+    roleInput.addEventListener('change', () => {
+        
+        if (roleInput.value === "") 
+        {
+            showError(roleInput, 'Veuillez selectionner un role.');
+        } else 
+        {
+            showError(roleInput, "");
+        }
+        checkFormValidaty();
+    });
+
     // Activer le bouton Ajouter si les champs sont valides
     function checkFormValidaty()
     {
         const nom = nomInput.value.trim();
-        const description = descriptionInput.value.trim();
+        const prenom = prenomInput.value.trim();
         const adresse = adresseInput.value.trim();
+        const telephone = telephoneInput.value.trim();
+        const email = emailInput.value.trim();
+        const role = roleInput.value.trim();
 
-        const isNameValid = Validator.nameValidator("Le nom", 5, 50, nom) == null;
-        const isDescriptionValid = description.length === 0 || Validator.nameValidator("La description", 5, 500, description) == null;
-        const isAdresseValid = Validator.addressValidator("La localisation", 2, 50, adresse) == null;
+        const isNameValid = Validator.nameValidator("Le nom", 5, 40, nom) == null;
+        const isPrenomValid = Validator.nameValidator("Le prénom", 5, 50, prenom) == null;
+        const isAdresseValid = Validator.addressValidator("L'adresse", 5, 50, adresse) == null;
+        const isTelephoneValid = Validator.phoneValidator("Le numéro de téléphone", 9, 17, telephone) == null;
+        const isEmailValid = Validator.emailValidator("L'email", email) == null;
+        const isRoleValid = role !== "";
 
-        btnAjouter.disabled = !(isNameValid && isDescriptionValid && isAdresseValid);
+        btnAjouter.disabled = !(
+            isPrenomValid &&
+            isNameValid &&
+            isAdresseValid &&
+            isTelephoneValid &&
+            isEmailValid && 
+            isRoleValid
+        );
     }
 
-
     // Desactiver le bouton ajouter apres cliquer sur annuler
-    frmAddLabo.addEventListener('reset', () => {
+    frmAddUser.addEventListener('reset', () => {
         btnAjouter.disabled = true;
     });
 

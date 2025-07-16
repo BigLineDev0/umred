@@ -30,7 +30,7 @@ class Validator
         return !value.length
             ? { error : true, message : `${controlName} est obligatoire.` }
             : !value.match(new RegExp(pattern))
-            ? { error : true, message : `Le '${controlName} ne doit contenir que des chiffres.` }
+            ? { error : true, message : `${controlName} ne doit contenir que des chiffres.` }
             : value.length < minlength
             ? {error : true, message : `${controlName} doit contenir au moins ${minlength} chiffres.`}
             : value.length > maxlength

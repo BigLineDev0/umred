@@ -13,12 +13,12 @@ class Maintenance extends Model
         'user_id',
         'equipement_id',
         'description',
-        'date',
+        'date_prevue',
         'statut',
     ];
 
     protected $casts = [
-        'date' => 'date',
+        'date_prevue' => 'date',
     ];
 
     public function user()

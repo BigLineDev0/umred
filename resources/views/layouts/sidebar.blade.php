@@ -52,10 +52,24 @@
                     </a>
                 </li>
 
+                <li class="has-sub {{ request()->routeIs('admin.maintenances.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.maintenances.index') }}">
+                        <i class="fa fa-tools"></i>
+                        <span>Gestion des Maintenances</span>
+                    </a>
+                </li>
+
                 <li class="has-sub {{ request()->routeIs('admin.utilisateurs.*') ? 'active' : '' }}">
                     <a href="{{ route('admin.utilisateurs.index') }}">
                         <i class="fa fa-users"></i>
                         <span>Gestion des Utilisateurs</span>
+                    </a>
+                </li>
+
+                <li class="has-sub">
+                    <a href="">
+                        <i class="fa fa-chart-bar"></i>
+                        <span>Rapports & Statistiques</span>
                     </a>
                 </li>
 
@@ -70,24 +84,24 @@
                     </a>
                 </li>
 
-                <li class="has-sub">
-                    <a href="#">
+                <li class="has-sub {{ request()->routeIs('technicien.historique.maintenances') ? 'active' : '' }}">
+                    <a href="{{  route('technicien.historique.maintenances') }}">
                         <i class="fa fa-tools"></i>
                         <span>Gestion des maintenances</span>
                     </a>
                 </li>
 
-                <li class="has-sub">
-                    <a href="#">
+                {{-- <li class="has-sub {{ request()->routeIs('technicien.historique.maintenances') ? 'active' : '' }}">
+                    <a href="{{  route('technicien.historique.maintenances') }}">
                         <i class="fa fa-history"></i>
                         <span>Historique maintenances</span>
                     </a>
-                </li>
+                </li> --}}
 
-                <li class="has-sub">
-                    <a href="#">
+                <li class="has-sub {{ request()->routeIs('technicien.equipements.maintenances') ? 'active' : '' }}">
+                    <a href="{{ route('technicien.equipements.maintenances') }}">
                         <i class="fa fa-microscope"></i>
-                        <span>Équipements</span>
+                        <span>Équipements maintenances</span>
                     </a>
                 </li>
             @endrole
@@ -104,14 +118,14 @@
                 <li class="has-sub">
                     <a href="#">
                         <i class="fa fa-calendar-plus"></i>
-                        <span>Réserver un laboratoire</span>
+                        <span>Nouvelle réservation</span>
                     </a>
                 </li>
 
                 <li class="has-sub {{ request()->routeIs('chercheur.reservations.historique') ? 'active' : '' }}">
                     <a href="{{ route('chercheur.reservations.historique') }}">
                         <i class="fa fa-history"></i>
-                        <span>Historique des réservations</span>
+                        <span>Mes réservations</span>
                     </a>
                 </li>
 
@@ -124,19 +138,21 @@
 
             @endrole
 
-            <li class="has-sub">
-                <a href="#">
+            <li class="has-sub {{ request()->routeIs('profile.edit') ? 'active' : '' }}">
+                <a href="{{ route('profile.edit') }}">
                     <i class="fa fa-user-circle"></i>
-                    <span>Profil</span>
+                    <span>Mon Profil</span>
                 </a>
             </li>
 
             {{-- 🔓 Déconnexion --}}
-            <li class="has-sub">
-                <a href="#">
-                    <i class="fa fa-sign-out-alt"></i>
-                    <span>Déconnexion</span>
-                </a>
+            <li class="has-sub mt-4 ml-4">
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-outline-danger d-flex align-items-center justify-content-center">
+                        <i class="fas fa-sign-out-alt mr-2"></i> Déconnexion
+                    </button>
+                </form>
             </li>
 
             {{-- Minimiser le menu --}}

@@ -1,50 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\Technicien;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PlanifierMaintenanceRequest;
 use App\Models\Equipement;
 use App\Models\Maintenance;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class TechnicienController extends Controller
+class MaintenanceController extends Controller
 {
-
-    public function index()
-    {
-        $user = Auth::user();
-
-        $stats = [
-            'total_maintenances' => Maintenance::where('user_id', $user->id)->count(),
-            'maintenances_en_cours' => Maintenance::where('user_id', $user->id)->where('statut', 'en_cours')->count(),
-            'maintenances_terminées' => Maintenance::where('user_id', $user->id)->where('statut', 'terminée')->count(),
-            'equipements_maintenances' => Equipement::where('statut', 'maintenance')->count(),
-        ];
-
-        $recent_maintenances = Maintenance::with('equipement')
-            ->where('user_id', $user->id)
-            ->latest()
-            ->take(5)
-            ->get();
-
-        return view('technicien.dashboard', compact(
-            'stats',
-            'recent_maintenances',
-        ));
-    }
-
-    public function equipementsMaintenances()
-    {
-        // On récupère uniquement les équipements marqués comme maintenance
-        $equipements = Equipement::where('statut', 'maintenance')
-            ->with('laboratoires')
-            ->latest()
-            ->get();
-
-        return view('technicien.equipements.index', compact('equipements'));
-    }
 
     public function historiqueMaintenances()
     {
@@ -52,12 +19,13 @@ class TechnicienController extends Controller
 
         $equipements = Equipement::where('statut', 'maintenance')->get();
 
+        $techniciens = User::role('technicien')->get();
+
         $maintenances = Maintenance::with('equipement')
-            ->where('user_id', $user->id)
             ->latest()
             ->get();
 
-        return view('technicien.maintenances.index', compact('maintenances', 'equipements'));
+        return view('admin.maintenances.index', compact('maintenances', 'equipements', 'techniciens'));
     }
 
     public function planifierMaintenance(PlanifierMaintenanceRequest $request)
@@ -66,7 +34,7 @@ class TechnicienController extends Controller
 
         Maintenance::create([
             'equipement_id' => $validated['equipement_id'],
-            'user_id' => auth()->id(),
+            'user_id' => $validated['user_id'] ?? Auth::id(),
             'date_prevue' => $validated['date_prevue'],
             'description' => $validated['description'],
             'statut' => 'en_cours',
@@ -83,18 +51,17 @@ class TechnicienController extends Controller
     {
         $validated = $request->validated();
 
-        // 1. On récupère la maintenance à modifier ou on échoue si elle n'existe pas
         $maintenance = Maintenance::findOrFail($id);
 
-        // 2. On met à jour la maintenance
         $maintenance->update([
             'equipement_id' => $validated['equipement_id'],
+            'user_id'       => $validated['user_id'] ?? Auth::id(),
             'date_prevue'   => $validated['date_prevue'],
             'description'   => $validated['description'],
-            'statut'        => $validated['statut'] ?? $maintenance->statut, // Garde le statut existant si non fourni
+            'statut'        => $validated['statut'] ?? $maintenance->statut, 
         ]);
 
-        // 3. On met à jour le statut de l’équipement selon le nouveau statut de la maintenance
+        
         $nouveauStatutEquipement = $validated['statut'] === 'terminée' ? 'disponible' : 'maintenance';
 
         Equipement::where('id', $validated['equipement_id'])
@@ -131,5 +98,4 @@ class TechnicienController extends Controller
 
         return redirect()->back()->with('success', 'La maintenance a été supprimée avec succès.');
     }
-
 }

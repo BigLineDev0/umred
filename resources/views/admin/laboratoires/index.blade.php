@@ -147,7 +147,7 @@
                         @csrf
                         <!-- Nom -->
                         <div class="mb-3">
-                            <label for="labo-nom" class="form-label">Nom</label>
+                            <label for="labo-nom" class="form-label">Nom <span class="text-danger">*</span></label>
                             <input type="text" name="nom" class="form-control" id="labo-nom" placeholder="Nom"
                                 required>
                             <p class="error-message mt-2"></p>
@@ -160,7 +160,7 @@
 
                         <!-- localisation -->
                         <div class="mb-3">
-                            <label for="labo-localisation" class="form-label">Localisation</label>
+                            <label for="labo-localisation" class="form-label">Localisation <span class="text-danger">*</span></label>
                             <input type="text" name="localisation" class="form-control" id="labo-localisation"
                                 placeholder="Adresse" required>
                             <p class="error-message mt-2"></p>
@@ -226,7 +226,7 @@
                         @method('PUT')
                         <!-- Nom -->
                         <div class="mb-3">
-                            <label for="edit-labo-nom" class="form-label">Nom</label>
+                            <label for="edit-labo-nom" class="form-label">Nom <span class="text-danger">*</span></label>
                             <input type="hidden" name="edit-labo-id" id="edit-labo-id" value="">
                             <input type="text" name="nom" class="form-control" id="edit-labo-nom" required>
                             <p class="error-message mt-2"></p>
@@ -239,7 +239,7 @@
 
                         <!-- localisation -->
                         <div class="mb-3">
-                            <label for="edit-labo-localisation" class="form-label">Localisation</label>
+                            <label for="edit-labo-localisation" class="form-label">Localisation <span class="text-danger">*</span></label>
                             <input type="text" name="localisation" class="form-control" id="edit-labo-localisation"
                                 placeholder="Adresse" required>
                             <p class="error-message mt-2"></p>
@@ -265,12 +265,11 @@
 
                         <!-- Statut -->
                         <div class="mb-3">
-                            <label for="edit-labo-statut" class="form-label">Statut</label>
+                            <label for="edit-labo-statut" class="form-label">Statut <span class="text-danger">*</span></label>
                             <select class="form-control" name="statut" id="edit-labo-statut" required>
                                 <option value="">--Selectionner un statut--</option>
                                 <option value="actif">Disponible</option>
                                 <option value="inactif">indisponible</option>
-                                <option value="maintenance">maintenance</option>
                             </select>
                             <p class="error-message mt-2"></p>
                             <div class="text-danger small">

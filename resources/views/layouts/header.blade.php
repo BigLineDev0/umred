@@ -56,17 +56,23 @@
         </li>
         <li class="dropdown navbar-user">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <img src="{{ asset('assets/img/user/user-13.jpg') }}" alt="" />
+
+                @if (auth()->user()->photo)
+                    <img src="{{ asset('storage/' . $user->photo) }}" alt="Photo de profil"
+                        class="rounded-circle img-thumbnail" width="150" height="150"
+                        id="photo-preview">
+                @else
+                     <img src="{{ asset('assets/img/user/user-13.jpg') }}" alt="" />
+                @endif
                 <span class="d-none d-md-inline">{{ auth()->user()->email }} </span> <b class="caret"></b>
             </a>
             <div class="dropdown-menu dropdown-menu-right">
-                <a href="javascript:;" class="dropdown-item">Profil</a>
-
-
+                <a href="{{ route('profile.edit') }}" class="dropdown-item">Profil</a>
                 <div class="dropdown-divider"></div>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="dropdown-item" style="border: none; background: transparent;">
+                    <button type="submit" class="dropdown-item d-flex align-items-center py-2 px-3 text-danger">
+                        <i class="fas fa-sign-out-alt me-3" style="width: 20px;"></i>
                         <span>Se déconnecter</span>
                     </button>
                 </form>

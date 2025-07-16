@@ -150,7 +150,7 @@
                         @csrf
                         <!-- Prénom -->
                         <div class="mb-3">
-                            <label for="user-prenom" class="form-label">Prénom</label>
+                            <label for="user-prenom" class="form-label">Prénom <span class="text-danger">*</span></label>
                             <input type="text" name="prenom" class="form-control" id="user-prenom"
                                 placeholder="Prénom" required>
                             <p class="error-message mt-2"></p>
@@ -163,7 +163,7 @@
 
                         <!-- Nom -->
                         <div class="mb-3">
-                            <label for="user-nom" class="form-label">Nom</label>
+                            <label for="user-nom" class="form-label">Nom <span class="text-danger">*</span></label>
                             <input type="text" name="name" class="form-control" id="user-nom" placeholder="Nom"
                                 required>
                             <p class="error-message mt-2"></p>
@@ -176,7 +176,7 @@
 
                         <!-- Adresse -->
                         <div class="mb-3">
-                            <label for="user-adresse" class="form-label">Adresse</label>
+                            <label for="user-adresse" class="form-label">Adresse <span class="text-danger">*</span></label>
                             <input type="text" name="adresse" class="form-control" id="user-adresse"
                                 placeholder="Adresse" required>
                             <p class="error-message mt-2"></p>
@@ -189,7 +189,7 @@
 
                         <!-- Téléphone -->
                         <div class="mb-3">
-                            <label for="telephone" class="form-label">Téléphone</label>
+                            <label for="telephone" class="form-label">Téléphone <span class="text-danger">*</span></label>
                             <input type="tel" name="telephone" class="form-control" id="user-telephone"
                                 placeholder="Téléphone" required>
                             <p class="error-message mt-2"></p>
@@ -202,7 +202,7 @@
 
                         <!-- Email -->
                         <div class="mb-3">
-                            <label for="user-email" class="form-label">Email</label>
+                            <label for="user-email" class="form-label">Email <span class="text-danger">*</span></label>
                             <input type="email" name="email" class="form-control" id="user-email"
                                 placeholder="Email" required>
                             <p class="error-message mt-2"></p>
@@ -215,7 +215,7 @@
 
                         <!-- Rôle -->
                         <div class="mb-3">
-                            <label for="user-role" class="form-label">Rôle</label>
+                            <label for="user-role" class="form-label">Rôle <span class="text-danger">*</span></label>
                             <select class="form-control" name="role" id="user-role" required>
                                 <option value="">--Selectionner un rôle--</option>
                                 <option value="admin">Admin</option>
@@ -234,7 +234,7 @@
                         <div class="mb-3">
                             <label for="user-photo" class="form-label">Photo</label><br>
                             <input type="file" name="photo" class="form-control-file" id="user-photo"
-                                accept="image/*" required>
+                                accept="image/*">
                             <p class="error-message mt-2"></p>
                             <div class="text-danger small">
                                 @error('photo')
@@ -326,44 +326,50 @@
 
                         <!-- Prénom -->
                         <div class="mb-3">
-                            <label for="edit-user-prenom" class="form-label">Prénom</label>
+                            <label for="edit-user-prenom" class="form-label">Prénom <span class="text-danger">*</span></label>
                             <input type="text" name="prenom" class="form-control" id="edit-user-prenom" required>
+                            <p class="error-message mt-2"></p>
                         </div>
 
                         <!-- Nom -->
                         <div class="mb-3">
-                            <label for="edit-user-nom" class="form-label">Nom</label>
+                            <label for="edit-user-nom" class="form-label">Nom <span class="text-danger">*</span></label>
                             <input type="text" name="name" class="form-control" id="edit-user-nom" required>
+                            <p class="error-message mt-2"></p>
                         </div>
 
                         <!-- Adresse -->
                         <div class="mb-3">
-                            <label for="edit-user-adresse" class="form-label">Adresse</label>
+                            <label for="edit-user-adresse" class="form-label">Adresse <span class="text-danger">*</span></label>
                             <input type="text" name="adresse" class="form-control" id="edit-user-adresse" required>
+                            <p class="error-message mt-2"></p>
                         </div>
 
                         <!-- Téléphone -->
                         <div class="mb-3">
-                            <label for="edit-user-telephone" class="form-label">Téléphone</label>
+                            <label for="edit-user-telephone" class="form-label">Téléphone <span class="text-danger">*</span></label>
                             <input type="text" name="telephone" class="form-control" id="edit-user-telephone"
                                 required>
+                            <p class="error-message mt-2"></p>
                         </div>
 
                         <!-- Email -->
                         <div class="mb-3">
-                            <label for="edit-user-email" class="form-label">Email</label>
+                            <label for="edit-user-email" class="form-label">Email <span class="text-danger">*</span></label>
                             <input type="email" name="email" class="form-control" id="edit-user-email" required>
+                            <p class="error-message mt-2"></p>
                         </div>
 
                         <!-- Rôle -->
                         <div class="mb-3">
-                            <label for="edit-user-role" class="form-label">Rôle</label>
+                            <label for="edit-user-role" class="form-label">Rôle <span class="text-danger">*</span></label>
                             <select class="form-control" name="role" id="edit-user-role" required>
                                 <option value="">-- Sélectionner un rôle --</option>
                                 <option value="admin">Admin</option>
                                 <option value="chercheur">Chercheur</option>
                                 <option value="technicien">Technicien</option>
                             </select>
+                            <p class="error-message mt-2"></p>
                         </div>
 
                         {{-- <!-- Statut -->
@@ -382,11 +388,12 @@
                                 <label class="form-label">Photo actuelle</label><br>
                                 <img id="edit-user-photo-preview" src="" alt="Photo utilisateur" class="img-thumbnail" style="max-height: 150px;">
                             </div>
+                            <p class="error-message mt-2"></p>
                         </div>
 
                         <!-- Boutons -->
                         <div class="text-center">
-                            <button type="submit" class="btn btn-success fw-bold">Modifier</button>
+                            <button type="submit" id="btnEditUser" class="btn btn-success fw-bold">Modifier</button>
                             &nbsp;&nbsp;
                             <button type="reset" class="btn btn-danger fw-bold">Annuler</button>
                         </div>
@@ -395,7 +402,6 @@
             </div>
         </div>
     </div>
-
 
 @endsection
 @include('admin.utilisateurs.scripts')

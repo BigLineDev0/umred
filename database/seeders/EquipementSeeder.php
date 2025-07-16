@@ -35,5 +35,29 @@ class EquipementSeeder extends Seeder
             'statut' => 'disponible',
         ]);
         $eq3->laboratoires()->attach([2]); // labo 2
+
+        // Équipement 4
+        $eq4 = Equipement::create([
+            'nom' => 'Microscope test',
+            'description' => 'test equipement',
+            'statut' => 'maintenance',
+        ]);
+        $eq4->laboratoires()->attach([2, 3]); // labo 2, 3
+
+        // Équipement 5
+        $eq5 = Equipement::create([
+            'nom' => 'Centrifugeuse',
+            'description' => 'Centrifugeuse de laboratoire pour séparation des échantillons',
+            'statut' => 'maintenance',
+        ]);
+        $eq5->laboratoires()->attach([1, 3]); // labo 1, 3
+
+        // Équipement 6
+        $eq6 = Equipement::create([
+            'nom' => 'Spectrophotomètre',
+            'description' => 'Appareil pour mesurer l’absorbance des solutions',
+            'statut' => 'maintenance',
+        ]);
+        $eq6->laboratoires()->attach([3]); // labo 3
     }
 }

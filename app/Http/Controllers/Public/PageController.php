@@ -31,10 +31,23 @@ class PageController extends Controller
         return view('pages.about');
     }
 
-    public function laboratoires()
+    public function laboratoires(Request $request)
     {
-        $laboratoires = Laboratoire::withCount('equipements')->latest()->paginate(9);
-        return view('pages.labs', compact('laboratoires'));
+        $query = Laboratoire::withCount('equipements');
+
+        if ($request->filled('statut')) {
+            $query->where('statut', $request->statut);
+        }
+
+        if ($request->filled('localisation')) {
+            $query->where('localisation', $request->localisation);
+        }
+
+        $laboratoires = $query->latest()->paginate(9);
+        $total = $laboratoires->total();
+        $localisations = Laboratoire::select('localisation')->distinct()->pluck('localisation');
+
+        return view('pages.labs', compact('laboratoires', 'total', 'localisations'));
     }
 
     public function contact()
