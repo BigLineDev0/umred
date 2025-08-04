@@ -16,7 +16,7 @@
             <div class="col-lg-8">
                 <!-- Informations personnelles -->
                 <div class="card mb-4">
-                    <div class="card-header bg-primary text-white">
+                    <div class="card-header bg-success text-white">
                         <h5 class="card-title mb-0">
                             <i class="fa fa-user me-2"></i>
                             Informations personnelles
@@ -220,7 +220,7 @@
                             </div>
 
                             <div class="d-flex justify-content-between align-items-center">
-                                <button type="submit" class="btn btn-success">
+                                <button type="submit" class="btn btn-primary">
                                     <i class="fa fa-key me-2"></i>
                                     Changer le mot de passe
                                 </button>
@@ -237,34 +237,13 @@
                     </div>
                 </div>
 
-                <!-- Supprimer le compte -->
-                <div class="card border-danger">
-                    <div class="card-header bg-danger text-white">
-                        <h5 class="card-title mb-0">
-                            <i class="fa fa-exclamation-triangle me-2"></i>
-                            Zone dangereuse
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <p class="text-muted">
-                            Une fois votre compte supprimé, toutes ses ressources et données seront définitivement
-                            supprimées.
-                            Cette action est irréversible.
-                        </p>
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                            data-bs-target="#deleteAccountModal">
-                            <i class="fa fa-trash me-2"></i>
-                            Supprimer mon compte
-                        </button>
-                    </div>
-                </div>
             </div>
 
             <!-- Sidebar -->
             <div class="col-lg-4">
                 <!-- Résumé du profil -->
                 <div class="card mb-4">
-                    <div class="card-header bg-info text-white">
+                    <div class="card-header bg-success text-white">
                         <h5 class="card-title mb-0">
                             <i class="fa fa-info-circle me-2"></i>
                             Résumé du profil
@@ -282,7 +261,7 @@
                                 </div>
                             @endif
                         </div>
-                        <h6 class="mb-1">{{ $user->name }} {{ $user->prenom }}</h6>
+                        <h6 class="mb-1">{{ $user->prenom }} {{ $user->name }} </h6>
                         <p class="text-muted mb-2">{{ $user->email }}</p>
 
                         <div class="mb-3">
@@ -329,7 +308,7 @@
 
                 <!-- Conseils -->
                 <div class="card">
-                    <div class="card-header bg-warning text-dark">
+                    <div class="card-header bg-success text-white">
                         <h5 class="card-title mb-0">
                             <i class="fa fa-lightbulb me-2"></i>
                             Conseils
@@ -359,58 +338,9 @@
             </div>
         </div>
     </div>
+    
 
-    <!-- Modal de suppression -->
-    <div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title" id="deleteAccountModalLabel">
-                        <i class="fa fa-exclamation-triangle me-2"></i>
-                        Confirmer la suppression
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <form method="POST" action="{{ route('profile.destroy') }}">
-                    <div class="modal-body">
-                        @csrf
-                        @method('delete')
 
-                        <div class="alert alert-danger">
-                            <i class="fa fa-exclamation-triangle me-2"></i>
-                            <strong>Attention!</strong> Cette action est irréversible.
-                        </div>
-
-                        <p>Êtes-vous sûr de vouloir supprimer votre compte? Toutes vos données seront perdues.</p>
-
-                        <div class="mb-3">
-                            <label for="password_delete" class="form-label">
-                                Tapez votre mot de passe pour confirmer
-                            </label>
-                            <input type="password"
-                                class="form-control @error('password', 'userDeletion') is-invalid @enderror"
-                                id="password_delete" name="password" required>
-                            @error('password', 'userDeletion')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            Annuler
-                        </button>
-                        <button type="submit" class="btn btn-danger">
-                            <i class="fa fa-trash me-2"></i>
-                            Supprimer définitivement
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 
     <!-- Formulaire de vérification email caché -->
     <form id="send-verification" method="POST" action="{{ route('verification.send') }}" style="display: none;">

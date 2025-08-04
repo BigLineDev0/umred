@@ -32,7 +32,7 @@ window.addEventListener('DOMContentLoaded', () => {
     // Validation du champ nom à la saisie
     nomInput.addEventListener('input', () => {
         const nom = nomInput.value.trim();
-        const nomValidator = Validator.nameValidator("Le nom", 5, 50, nom);
+        const nomValidator = Validator.nameValidator("Le nom", 5, 100, nom);
 
         if (nomValidator)
         {
@@ -81,14 +81,14 @@ window.addEventListener('DOMContentLoaded', () => {
     // Validation du champ photo à la selection
     photoInput.addEventListener('change', () => {
         const photo = photoInput.files[0];
-        
-        if (!photo) 
+
+        if (!photo)
         {
             showError(photoInput, 'La photo est obligatoire.');
-            
+
         } else if (!photo.type.startsWith('image/')) {
             showError(photoInput, 'Le fichier doit être une image.');
-        } else 
+        } else
         {
             showError(photoInput, "");
         }
@@ -103,7 +103,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const description = descriptionInput.value.trim();
         const adresse = adresseInput.value.trim();
 
-        const isNameValid = Validator.nameValidator("Le nom", 5, 50, nom) == null;
+        const isNameValid = Validator.nameValidator("Le nom", 5, 100, nom) == null;
         const isDescriptionValid = description.length === 0 || Validator.nameValidator("La description", 5, 500, description) == null;
         const isAdresseValid = Validator.addressValidator("La localisation", 2, 50, adresse) == null;
 

@@ -60,7 +60,13 @@
                                 <!-- Laboratoire -->
                                 <td>
                                     @foreach ($equipement->laboratoires as $laboratoire)
-                                        <div><i class="fa fa-check-circle text-success"></i> {{ $laboratoire->nom ?? 'N/A'}}</div>
+                                        <div><i class="fa fa-check-circle text-success"></i> 
+                                            @if(strlen($laboratoire->nom) > 30)
+                                                {{ Str::limit($laboratoire->nom, 30, '...') }}
+                                            @else
+                                                {{ $laboratoire->nom }}
+                                            @endif
+                                        </div>
                                     @endforeach
                                 </td>
 
@@ -80,6 +86,9 @@
                                         data-laboratoires="{{ $equipement->laboratoires->pluck('nom')->implode('|') }}"
                                         data-toggle="modal" data-target="#modal-detail-labo" title="Voir détails">
                                         <i class="fa fa-eye btn btn-info"></i>
+                                    </a>
+                                    <a href="#" title="Voir détails">
+                                        <i class="fa fa-bell btn btn-danger"></i>
                                     </a>
                                 </td>
                             </tr>

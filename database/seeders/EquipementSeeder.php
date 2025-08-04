@@ -14,7 +14,7 @@ class EquipementSeeder extends Seeder
     {
         // Équipement 1
         $eq1 = Equipement::create([
-            'nom' => 'Microscope électronique',
+            'nom' => 'Hotte biologique',
             'description' => 'Microscope électronique à transmission haute résolution',
             'statut' => 'disponible',
         ]);
@@ -57,6 +57,14 @@ class EquipementSeeder extends Seeder
             'nom' => 'Spectrophotomètre',
             'description' => 'Appareil pour mesurer l’absorbance des solutions',
             'statut' => 'maintenance',
+        ]);
+        $eq6->laboratoires()->attach([3]); // labo 3
+
+        // Équipement 7
+        $eq6 = Equipement::create([
+            'nom' => 'Spectrophotomètre',
+            'description' => 'Appareil pour mesurer l’absorbance des solutions',
+            'statut' => 'reserve',
         ]);
         $eq6->laboratoires()->attach([3]); // labo 3
     }

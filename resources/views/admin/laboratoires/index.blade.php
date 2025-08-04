@@ -65,12 +65,16 @@
                                 </td>
 
                                 <!-- Nom -->
-                                <td class="text-center">
-                                    {{ $laboratoire->nom }}
+                                <td>
+                                    @if(strlen($laboratoire->nom) > 30)
+                                        {{ Str::limit($laboratoire->nom, 30, '...') }}
+                                    @else
+                                        {{ $laboratoire->nom }}
+                                    @endif
                                 </td>
 
                                 <!-- Adresse -->
-                                <td class="text-center">
+                                <td>
                                     {{ $laboratoire->localisation }}
                                 </td>
 

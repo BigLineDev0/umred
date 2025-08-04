@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('detail-email').textContent = button.dataset.email;
             document.getElementById('detail-date').textContent = button.dataset.date;
             document.getElementById('detail-labo').textContent = button.dataset.labo;
-            document.getElementById('detail-objectif').textContent = button.dataset.objectif;
+            document.getElementById('detail-objectif').textContent = button.dataset.objectif || '-';
             document.getElementById('detail-equipements').textContent = button.dataset.equipements || 'Aucun équipement';
             document.getElementById('detail-horaires').textContent = button.dataset.horaires;
             document.getElementById('detail-created').textContent = button.dataset.created;

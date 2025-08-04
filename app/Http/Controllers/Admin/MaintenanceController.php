@@ -21,7 +21,7 @@ class MaintenanceController extends Controller
 
         $techniciens = User::role('technicien')->get();
 
-        $maintenances = Maintenance::with('equipement')
+        $maintenances = Maintenance::with(['equipement', 'user'])
             ->latest()
             ->get();
 
@@ -58,10 +58,10 @@ class MaintenanceController extends Controller
             'user_id'       => $validated['user_id'] ?? Auth::id(),
             'date_prevue'   => $validated['date_prevue'],
             'description'   => $validated['description'],
-            'statut'        => $validated['statut'] ?? $maintenance->statut, 
+            'statut'        => $validated['statut'] ?? $maintenance->statut,
         ]);
 
-        
+
         $nouveauStatutEquipement = $validated['statut'] === 'terminée' ? 'disponible' : 'maintenance';
 
         Equipement::where('id', $validated['equipement_id'])

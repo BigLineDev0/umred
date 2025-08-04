@@ -116,7 +116,7 @@
                 </li>
 
                 <li class="has-sub">
-                    <a href="#">
+                    <a href="{{ route('laboratoires') }}">
                         <i class="fa fa-calendar-plus"></i>
                         <span>Nouvelle réservation</span>
                     </a>

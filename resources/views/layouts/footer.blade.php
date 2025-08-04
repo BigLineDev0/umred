@@ -62,7 +62,7 @@
             </div>
 
             <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-                <p>&copy; {{ date('Y') }} UMRED. Tous droits réservés. Conçu avec <i class="fas fa-heart text-red-500"></i> pour la recherche scientifique</p>
+                <p>&copy; {{ date('Y') }} UMRED. Tous droits réservés.</p>
             </div>
         </div>
     </footer>

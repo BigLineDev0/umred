@@ -17,9 +17,9 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             UserSeeder::class,
             LaboratoireSeeder::class,
-            EquipementSeeder::class,
-            ReservationSeeder::class,
-            MaintenanceSeeder::class,
+            // EquipementSeeder::class,
+            // ReservationSeeder::class,
+            // MaintenanceSeeder::class,
         ]);
     }
 }

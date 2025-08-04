@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirmation de réservation</title>
+    <title>Réservation confirmée</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -33,13 +33,26 @@
         }
         .status-badge {
             display: inline-block;
-            background-color: #fef3c7;
-            color: #92400e;
+            background-color: #d1fae5;
+            color: #065f46;
             padding: 8px 16px;
             border-radius: 20px;
             font-size: 14px;
             font-weight: 600;
             margin-top: 12px;
+        }
+        .confirmation-message {
+            background-color: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            color: #0c4a6e;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        .confirmation-message h3 {
+            margin: 0 0 8px 0;
+            color: #0c4a6e;
         }
         .details-section {
             margin-bottom: 32px;
@@ -95,31 +108,47 @@
             text-decoration: none;
             border-radius: 8px;
             font-weight: 600;
-            margin-top: 16px;
+            margin: 8px;
         }
-        .alert {
-            background-color: #fef2f2;
-            border: 1px solid #fecaca;
-            color: #dc2626;
+        .button-secondary {
+            background-color: #6b7280;
+        }
+        .instructions {
+            background-color: #fffbeb;
+            border: 1px solid #f59e0b;
+            color: #92400e;
             padding: 16px;
             border-radius: 8px;
             margin-bottom: 24px;
+        }
+        .instructions h4 {
+            margin: 0 0 8px 0;
+            color: #92400e;
         }
     </style>
 </head>
 <body>
     <div class="email-container">
         <div class="header">
-            <h1>🧪 Confirmation de Réservation</h1>
-            <div class="status-badge">{{ ucfirst(str_replace('_', ' ', $reservation->statut)) }}</div>
+            <h1>✅ Réservation Confirmée</h1>
+            <div class="status-badge">Confirmée</div>
         </div>
 
-        <div class="alert">
-            <strong>📋 Important :</strong> Votre réservation est actuellement en attente de confirmation par l'administrateur du laboratoire.
+        <div class="confirmation-message">
+            <h3>🎉 Félicitations !</h3>
+            <p>Votre réservation a été confirmée. Vous pouvez maintenant utiliser le laboratoire aux créneaux réservés.</p>
+        </div>
+
+        <div class="instructions">
+            <h4>📝 Instructions importantes :</h4>
+            <p>• Présentez-vous au laboratoire 10 minutes avant le début de votre créneau<br>
+            • Apportez une pièce d'identité valide<br>
+            • Respectez les règles de sécurité du laboratoire<br>
+            • En cas d'empêchement, annulez votre réservation au moins 2h à l'avance</p>
         </div>
 
         <div class="details-section">
-            <h2>📋 Détails de la réservation</h2>
+            <h2>📋 Détails de votre réservation</h2>
 
             <div class="detail-item">
                 <div class="detail-label">Numéro de réservation :</div>
@@ -156,7 +185,7 @@
 
             <div class="detail-item">
                 <div class="detail-label">Objectif :</div>
-                <div class="objectif-text">{{ $reservation->objectif }}</div>
+                <div class="objectif-text">{{ $reservation->objectif ?? '-' }}</div>
             </div>
         </div>
 
@@ -170,21 +199,26 @@
                 <div class="detail-label">Email :</div>
                 <div class="detail-value">{{ $reservation->user->email }}</div>
             </div>
+            <div class="detail-item">
+                <div class="detail-label">Téléphone :</div>
+                <div class="detail-value">{{ $reservation->user->telephone ?? '-' }}</div>
+            </div>
         </div>
 
         <div style="text-align: center; margin-top: 32px;">
-            <p><strong>Que faire maintenant ?</strong></p>
-            <p>Votre demande a été transmise à l'équipe du laboratoire. Vous recevrez un email de confirmation dès que votre réservation sera validée.</p>
-
             <a href="{{ route('dashboard') }}" class="button">
-                Voir mes réservations
+                Gérer mes réservations
+            </a>
+            <a href="{{ route('laboratoires')}}" class="button button-secondary">
+                Voir le laboratoire
             </a>
         </div>
 
         <div class="footer">
             <p>
                 📧 Cet email a été envoyé automatiquement, merci de ne pas y répondre.<br>
-                📅 Réservation effectuée le {{ $reservation->created_at->locale('fr')->isoFormat('D MMMM YYYY à HH:mm') }}
+                📅 Réservation confirmée le {{ $reservation->created_at->locale('fr')->isoFormat('D MMMM YYYY à HH:mm') }}<br>
+                ❓ Besoin d'aide ? Contactez-nous via votre tableau de bord.
             </p>
         </div>
     </div>

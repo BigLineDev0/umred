@@ -72,9 +72,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware('role:chercheur')->prefix('chercheur')->name('chercheur.')->group(function () {
         Route::get('/dashboard', [ChercheurController::class, 'index'])->name('dashboard');
         Route::get('/equipements-disponibles', [ChercheurController::class, 'equipementsDisponibles'])->name('equipements.disponibles');
-        Route::get('/reservations/historique', [RendezVousController::class, 'mesReservations'])->name('reservations.historique');
-        Route::put('/reservations/{reservation}', [RendezVousController::class, 'update'])->name('reservations.update');
+        Route::get('/reservations', [RendezVousController::class, 'mesReservations'])->name('reservations.historique');
         Route::patch('/reservations/{reservation}/annuler', [RendezVousController::class, 'annuler'])->name('reservations.annuler');
+        // Routes pour la modification de réservations
+        Route::get('/reservations/{reservation}/edit', [RendezVousController::class, 'edit'])->name('reservations.edit');
+        Route::put('/reservations/{id}', [RendezVousController::class, 'update'])->name('reservations.update');
+
+        // Routes AJAX pour les données dynamiques
+        Route::get('reservations/equipements/{laboratoire}', [RendezVousController::class, 'getEquipements'])
+            ->name('reservations.equipements');
+
+        // Route pour les horaires disponibles lors de l'édition (basée sur votre fonction existante)
+        Route::get('reservations/horaires-edit/{laboratoire}', [RendezVousController::class, 'getHorairesDisponiblesEdit'])
+            ->name('reservations.horaires-edit');
+
     });
 
     // Routes Technicien
@@ -86,8 +97,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('/maintenances/{id}', [TechnicienController::class, 'modifierMaintenance'])->name('maintenances.update');
         Route::put('/maintenances/{maintenance}/terminer', [TechnicienController::class, 'terminer'])->name('maintenances.terminer');
         Route::delete('maintenances/{maintenance}', [TechnicienController::class, 'destroy'])->name('maintenances.destroy');
-
-
     });
 });
 

@@ -15,6 +15,7 @@
         transition: all 0.3s ease;
         border-radius: 16px;
         overflow: hidden;
+        height: auto;
     }
 
     .lab-card:hover {
@@ -166,7 +167,7 @@
                                 <span class="text-gray-600">{{ $labo->localisation }}</span>
                             </div>
                             <p class="text-gray-600 mb-4">
-                                {{ \Illuminate\Support\Str::limit($labo->description, 120) }}
+                                {{ \Illuminate\Support\Str::limit($labo->description, 120)  ?? 'Aucune description disponible' }}
                             </p>
 
                             @if ($labo->statut === 'actif')

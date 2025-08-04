@@ -92,16 +92,10 @@
                                         <i class="fa fa-eye"></i>
                                     </a>
 
-                                    @if (!in_array($reservation->statut, ['annulée', 'confirmée', 'terminée']))
+                                    @if (!in_array($reservation->statut, ['annulée', 'enc_cours']))
                                         <!-- Modifier -->
-                                        <a href="javascript:;" class="btn btn-sm btn-success btn-edit-reservation"
-                                            data-id="{{ $reservation->id }}"
-                                            data-date="{{ $reservation->date }}"
-                                            data-objectif="{{ $reservation->objectif }}"
-                                            data-labo-id="{{ $reservation->laboratoire_id }}"
-                                            data-equipements="{{ $reservation->equipements->pluck('id')->join(',') }}"
-                                            data-horaires="{{ $reservation->horaires->map(fn($h) => $h->heure_debut . '-' . $h->heure_fin)->join(',') }}"
-                                            data-toggle="modal" data-target="#modal-edit-reservation" title="Modifier">
+                                        <a href="{{ route('chercheur.reservations.edit', $reservation->id) }}" class="btn btn-sm btn-success btn-edit-reservation"
+                                            title="Modifier">
                                             <i class="fa fa-edit"></i>
                                         </a>
 
@@ -111,7 +105,7 @@
                                             method="POST" style="display:inline;">
                                             @csrf
                                             @method('PATCH')
-                                            <button type="submit" class="btn btn-sm btn-danger annuler-btn"
+                                            <button type="button" class="btn btn-sm btn-danger annuler-btn"
                                                 data-id="{{ $reservation->id }}" title="Annuler">
                                                 <i class="fa fa-times"></i>
                                             </button>
@@ -127,92 +121,38 @@
 
     </div>
 
-    {{-- <!-- Modal modification réservation -->
-    <div class="modal fade" id="modal-edit-reservation" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content shadow">
+<style>
+.max-height-200 {
+    max-height: 200px;
+}
 
-                <div class="modal-header bg-success text-white">
-                    <h4 class="modal-title">Modifier une réservation</h4>
-                    <button type="button" class="close text-white" data-dismiss="modal">×</button>
-                </div>
+.horaire-option {
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    margin-bottom: 0.5rem;
+    transition: all 0.2s;
+}
 
-                <div class="modal-body">
-                    <form id="editReservationForm" method="POST">
-                        @csrf
-                        @method('PUT')
+.horaire-option:hover {
+    background-color: #f8f9fa;
+}
 
-                        <input type="hidden" name="id" id="edit-reservation-id">
+.horaire-option.selected {
+    border-color: #0d6efd;
+    background-color: #e7f1ff;
+}
 
-                        <!-- Date -->
-                        <div class="mb-3">
-                            <label for="edit-reservation-date" class="form-label">Date</label>
-                            <input type="date" name="date" id="edit-reservation-date" class="form-control" required>
-                        </div>
+.horaire-option.disabled {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    cursor: not-allowed;
+}
 
-                        <!-- Objectif -->
-                        <div class="mb-3">
-                            <label for="edit-reservation-objectif" class="form-label">Objectif</label>
-                            <textarea name="objectif" id="edit-reservation-objectif" class="form-control" rows="3" required></textarea>
-                        </div>
-
-                        <!-- Laboratoire -->
-                        <div class="mb-3">
-                            <label for="edit-reservation-laboratoire" class="form-label">Laboratoire</label>
-                            <select name="laboratoire_id" id="edit-reservation-laboratoire" class="form-control"
-                                required>
-                                <option value="">-- Sélectionner un laboratoire --</option>
-                                @foreach ($laboratoires as $labo)
-                                    <option value="{{ $labo->id }}">{{ $labo->nom }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <!-- Équipements -->
-                        <div class="mb-3">
-                            <label>Équipements</label>
-                            <div class="border rounded p-2" style="max-height: 200px; overflow-y: auto;">
-                                @foreach ($equipements as $equipement)
-                                    <div class="form-check">
-                                        <input class="form-check-input edit-equipement-checkbox" type="checkbox"
-                                            name="equipements[]" value="{{ $equipement->id }}"
-                                            id="edit-eq{{ $equipement->id }}">
-                                        <label class="form-check-label" for="edit-eq{{ $equipement->id }}">
-                                            {{ $equipement->nom }}
-                                        </label>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-
-                        <!-- Horaires -->
-                        <div class="mb-3">
-                            <label>Horaires</label>
-                            <div class="border rounded p-2" style="max-height: 200px; overflow-y: auto;">
-                                @foreach ($horaires as $horaire)
-                                    <div class="form-check">
-                                        <input class="form-check-input edit-horaire-checkbox" type="checkbox"
-                                            name="horaires[]" value="{{ $horaire->id }}"
-                                            id="edit-horaire{{ $horaire->id }}">
-                                        <label class="form-check-label" for="edit-horaire{{ $horaire->id }}">
-                                            {{ $horaire->heure_debut }} - {{ $horaire->heure_fin }}
-                                        </label>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-
-                        <div class="text-center">
-                            <button type="submit" class="btn btn-success">Modifier</button>
-                            <button type="button" class="btn btn-secondary ml-2" data-dismiss="modal">Annuler</button>
-                        </div>
-                    </form>
-                </div>
-
-            </div>
-        </div>
-    </div> --}}
-
+.equipement-checkbox:checked + label {
+    background-color: #e7f1ff;
+    border-color: #0d6efd;
+}
+</style>
 
     <!-- Modal Détail Réservation -->
     <div class="modal fade" id="modal-detail-reservation" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">

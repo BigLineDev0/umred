@@ -16,7 +16,6 @@ class AdminController extends Controller
     public function index()
     {
         $stats = [
-            'total_users' => User::count(),
             'total_laboratories' => Laboratoire::count(),
             'total_equipments' => Equipement::count(),
             'pending_reservations' => Reservation::where('statut', 'en_attente')->count(),

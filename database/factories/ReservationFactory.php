@@ -13,7 +13,7 @@ class ReservationFactory extends Factory
         return [
             'date' => $this->faker->dateTimeBetween('now', '+1 month')->format('Y-m-d'),
             'objectif' => $this->faker->sentence(5),
-            'statut' => $this->faker->randomElement(['en_attente', 'confirmée', 'annulée', 'terminée']),
+            'statut' => $this->faker->randomElement(['en_attente', 'confirmée', 'annulée']),
             'user_id' => User::inRandomOrder()->first()?->id ?? User::factory(),
             'laboratoire_id' => Laboratoire::inRandomOrder()->first()?->id ?? Laboratoire::factory(),
         ];

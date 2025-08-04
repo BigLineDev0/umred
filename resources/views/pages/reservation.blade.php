@@ -3,189 +3,159 @@
 @section('title', 'Réserver - ' . $laboratoire->nom)
 
 @section('content')
-    <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <!-- Header -->
-            <div class="p-32 pb-16 mb-8">
-                <div class="flex items-center space-x-2 text-sm text-gray-600 mb-4">
-                    <a href="{{ route('laboratoires') }}" class="hover:text-blue-600">Laboratoires</a>
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 111.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                            clip-rule="evenodd"></path>
-                    </svg>
-                    <span class="text-gray-900">Réservation</span>
-                </div>
-                <h1 class="text-3xl font-bold text-gray-900">Réserver {{ $laboratoire->nom }}</h1>
-                <p class="text-gray-600 mt-2">{{ $laboratoire->description }}</p>
+    <!-- Hero Section -->
+    <div class="relative bg-gradient-to-r from-blue-600 to-indigo-800 py-20 md:py-28">
+        <div class="absolute inset-0 bg-black opacity-20"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center">
+                <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">Réserver le {{ $laboratoire->nom }}</h1>
+                {{-- <p class="text-lg text-blue-100 max-w-3xl mx-auto">{{ $laboratoire->description }}</p> --}}
             </div>
+        </div>
+        <div class="absolute bottom-0 left-0 right-0 h-12 bg-white transform skew-y-1 -mb-6"></div>
+    </div>
 
-            <!-- Messages d'erreur/succès -->
-            @if (session('error'))
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-                    {{ session('error') }}
-                </div>
-            @endif
+    <!-- Reservation Form -->
+    <div class="bg-gray-50 py-12" id="reservation-form">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white shadow-xl rounded-2xl overflow-hidden">
+                <div class="md:flex">
+                    <!-- Form Section -->
+                    <div class="md:w-2/3 p-6 sm:p-8">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">Formulaire de réservation</h2>
 
-            @if ($errors->any())
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-                    <ul class="list-disc pl-5">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+                        @if (session('error'))
+                        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
+                            <p>{{ session('error') }}</p>
+                        </div>
+                        @endif
 
-            <form id="reservationForm" action="{{ route('reservations.store') }}" method="POST"
-                class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                @csrf
-                <input type="hidden" name="laboratoire_id" value="{{ $laboratoire->id }}">
+                        @if ($errors->any())
+                        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
+                            <ul class="list-disc pl-5">
+                                @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                        @endif
 
-                <!-- Formulaire principal -->
-                <div class="lg:col-span-2 space-y-6">
-                    <!-- Sélection des équipements -->
-                    <div class="bg-white rounded-xl shadow-lg p-6">
-                        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-                            <svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z">
-                                </path>
-                            </svg>
-                            Équipements disponibles
-                        </h2>
+                        <form id="reservationForm" action="{{ route('reservations.store') }}" method="POST" class="space-y-6">
+                            @csrf
+                            <input type="hidden" name="laboratoire_id" value="{{ $laboratoire->id }}">
 
-                        @if ($laboratoire->equipements->count() > 0)
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                @foreach ($laboratoire->equipements as $equipement)
-                                    <label
-                                        class="relative flex items-start p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-300 transition-colors duration-200">
-                                        <input type="checkbox" name="equipements[]" value="{{ $equipement->id }}"
-                                            class="sr-only equipement-checkbox" onchange="updateRecap()">
-                                        <div class="flex-shrink-0">
-                                            <div
-                                                class="w-6 h-6 bg-white border-2 border-gray-300 rounded flex items-center justify-center checkbox-custom">
-                                                <svg class="w-4 h-4 text-blue-600 hidden check-icon" fill=""
-                                                    viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd"
-                                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                                        clip-rule="evenodd"></path>
-                                                </svg>
-                                            </div>
+                            <!-- Equipments Section -->
+                            <div class="space-y-2">
+                                <h3 class="text-lg font-medium text-gray-900 flex items-center">
+                                    <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+                                    </svg>
+                                    Équipements disponibles
+                                </h3>
+                                @if ($laboratoire->equipements->count() > 0)
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    @foreach ($laboratoire->equipements as $equipement)
+                                    <label class="flex items-start p-3 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors duration-200">
+                                        <div class="flex items-center h-5">
+                                            <input type="checkbox" name="equipements[]" value="{{ $equipement->id }}" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded equipement-checkbox" onchange="updateRecap()">
                                         </div>
-                                        <div class="ml-3 flex-1">
-                                            <span class="block text-sm font-medium text-gray-900">{{ $equipement->nom }}</span>
+                                        <div class="ml-3 text-sm">
+                                            <span class="font-medium text-gray-900">{{ $equipement->nom }}</span>
                                         </div>
                                     </label>
-                                @endforeach
+                                    @endforeach
+                                </div>
+                                @else
+                                <p class="text-gray-500 text-center py-8">Aucun équipement disponible pour ce laboratoire.</p>
+                                @endif
                             </div>
-                        @else
-                            <p class="text-gray-500 text-center py-8">Aucun équipement disponible pour ce laboratoire.</p>
-                        @endif
+
+                            <!-- Date Selection -->
+                            <div class="space-y-2">
+                                <h3 class="text-lg font-medium text-gray-900 flex items-center">
+                                    <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    Date de réservation
+                                </h3>
+                                <input type="date" name="date" id="dateInput" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" min="{{ date('Y-m-d') }}" onchange="loadHoraires()" required>
+                            </div>
+
+                            <!-- Time Slots -->
+                            <div class="space-y-2">
+                                <h3 class="text-lg font-medium text-gray-900 flex items-center">
+                                    <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    Créneaux horaires
+                                </h3>
+                                <div id="horairesContainer" class="text-center text-gray-500 py-8 bg-gray-50 rounded-lg">
+                                    Sélectionnez d'abord une date pour voir les créneaux disponibles
+                                </div>
+                            </div>
+
+                            <!-- Purpose -->
+                            <div class="space-y-2">
+                                <h3 class="text-lg font-medium text-gray-900 flex items-center">
+                                    <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-1.586l-4 4z"></path>
+                                    </svg>
+                                    Objectif de la réservation
+                                </h3>
+                                <textarea name="objectif" id="objectif" rows="4" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Décrivez l'objectif de votre réservation (optionnel)" onchange="updateRecap()"></textarea>
+                                <p class="text-sm text-gray-500">Maximum 500 caractères</p>
+                            </div>
+                        </form>
                     </div>
 
-                    <!-- Sélection de la date -->
-                    <div class="bg-white rounded-xl shadow-lg p-6">
-                        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-                            <svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                </path>
-                            </svg>
-                            Date de réservation
-                        </h2>
-                        <input type="date" name="date" id="dateInput"
-                            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            min="{{ date('Y-m-d') }}" onchange="loadHoraires()" required>
-                    </div>
+                    <!-- Summary Section -->
+                    <div class="md:w-1/3 bg-gray-50 p-6 sm:p-8 border-t md:border-t-0 md:border-l border-gray-200">
+                        <div class="sticky top-6">
+                            <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                                <svg class="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                Récapitulatif
+                            </h2>
 
-                    <!-- Sélection des horaires -->
-                    <div class="bg-white rounded-xl shadow-lg p-6">
-                        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-                            <svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            Créneaux horaires
-                        </h2>
+                            <div class="space-y-6">
+                                <div>
+                                    <h3 class="text-sm font-medium text-gray-500">Laboratoire</h3>
+                                    <p class="mt-1 text-lg font-semibold text-gray-900">{{ $laboratoire->nom }}</p>
+                                </div>
 
-                        <div id="horairesContainer" class="text-center text-gray-500 py-8">
-                            Sélectionnez d'abord une date pour voir les créneaux disponibles
+                                <div id="recapDate" class="hidden">
+                                    <h3 class="text-sm font-medium text-gray-500">Date</h3>
+                                    <p class="mt-1 text-lg font-semibold text-gray-900" id="recapDateValue"></p>
+                                </div>
+
+                                <div id="recapEquipements" class="hidden">
+                                    <h3 class="text-sm font-medium text-gray-500">Équipements</h3>
+                                    <ul class="mt-2 space-y-1 text-gray-900" id="recapEquipementsList"></ul>
+                                </div>
+
+                                <div id="recapHoraires" class="hidden">
+                                    <h3 class="text-sm font-medium text-gray-500">Créneaux</h3>
+                                    <ul class="mt-2 space-y-1 text-gray-900" id="recapHorairesList"></ul>
+                                </div>
+
+                                <div id="recapObjectif" class="hidden">
+                                    <h3 class="text-sm font-medium text-gray-500">Objectif</h3>
+                                    <p class="mt-1 text-gray-900" id="recapObjectifValue"></p>
+                                </div>
+
+                                <button type="submit" form="reservationForm" id="submitBtn" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-300" disabled>
+                                    Confirmer la réservation
+                                </button>
+                            </div>
                         </div>
                     </div>
-
-                    <!-- Commentaire/Objectif -->
-                    <div class="bg-white rounded-xl shadow-lg p-6">
-                        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-                            <svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-1.586l-4 4z">
-                                </path>
-                            </svg>
-                            Objectif de la réservation
-                        </h2>
-                        <textarea name="objectif" id="objectif" rows="4"
-                            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                            placeholder="Décrivez l'objectif de votre réservation (optionel)" onchange="updateRecap()" required></textarea>
-                        <p class="text-sm text-gray-500 mt-2">Maximum 500 caractères</p>
-                    </div>
                 </div>
-
-                <!-- Récapitulatif -->
-                <div class="lg:col-span-1">
-                    <div class="bg-white rounded-xl shadow-lg p-6 sticky top-8">
-                        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-                            <svg class="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            Récapitulatif
-                        </h2>
-
-                        <div class="space-y-4">
-                            <div>
-                                <h3 class="font-medium text-gray-900">Laboratoire</h3>
-                                <p class="text-gray-600">{{ $laboratoire->nom }}</p>
-                            </div>
-
-                            <div id="recapDate" class="hidden">
-                                <h3 class="font-medium text-gray-900">Date</h3>
-                                <p class="text-gray-600" id="recapDateValue"></p>
-                            </div>
-
-                            <div id="recapEquipements" class="hidden">
-                                <h3 class="font-medium text-gray-900">Équipements</h3>
-                                <ul class="text-gray-600 text-sm space-y-1" id="recapEquipementsList"></ul>
-                            </div>
-
-                            <div id="recapHoraires" class="hidden">
-                                <h3 class="font-medium text-gray-900">Créneaux</h3>
-                                <ul class="text-gray-600 text-sm space-y-1" id="recapHorairesList"></ul>
-                            </div>
-
-                            <div id="recapObjectif" class="hidden">
-                                <h3 class="font-medium text-gray-900">Objectif</h3>
-                                <p class="text-gray-600 text-sm" id="recapObjectifValue"></p>
-                            </div>
-                        </div>
-
-                        <button type="submit" id="submitBtn"
-                            class="w-full mt-6 bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
-                            disabled>
-                            Confirmer la réservation
-                        </button>
-                    </div>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 
-    <!-- Popup de confirmation -->
+    <!-- Modals and Overlays -->
     <div id="confirmationModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 hidden">
         <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-lg bg-white">
             <div class="mt-3">
@@ -212,26 +182,8 @@
                     <!-- Le contenu sera injecté par JavaScript -->
                 </div>
 
-                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-                    <div class="flex items-start">
-                        <svg class="w-5 h-5 text-yellow-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor"
-                            viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                                d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                                clip-rule="evenodd"></path>
-                        </svg>
-                        <div>
-                            <h4 class="text-sm font-medium text-yellow-800">En attente de confirmation</h4>
-                            <p class="text-sm text-yellow-700 mt-1">
-                                Votre réservation est en attente de validation par l'équipe du laboratoire.
-                                Vous recevrez un email dès qu'elle sera confirmée.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Actions -->
-                <div class="flex flex-col sm:flex-row gap-3 pt-4">
+                <div class="flex flex-col sm:flex-row gap-3">
                     <button onclick="closeModal()"
                         class="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">
                         Fermer
@@ -257,7 +209,6 @@
 
     <script>
         // Variables globales
-        let horairesDisponibles = [];
         let horairesSelectionnes = [];
 
         // Charger les horaires disponibles
@@ -266,45 +217,73 @@
             if (!date) return;
 
             const container = document.getElementById('horairesContainer');
-            container.innerHTML =
-                '<div class="text-center py-8"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div><p class="mt-2 text-gray-500">Chargement des créneaux...</p></div>';
+            container.innerHTML = '<div class="text-center py-8"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div><p class="mt-2 text-gray-500">Chargement des créneaux...</p></div>';
 
             try {
                 const response = await fetch(`/reservations/horaires/{{ $laboratoire->id }}?date=${date}`);
-                const horaires = await response.json();
+                const data = await response.json();
 
-                if (horaires.length === 0) {
-                    container.innerHTML =
-                        '<div class="text-center text-gray-500 py-8">Aucun créneau disponible pour cette date</div>';
+                console.log('Données reçues:', data);
+
+                if (!data.horaires_base || data.horaires_base.length === 0) {
+                    container.innerHTML = '<div class="text-center text-gray-500 py-8">Aucun créneau disponible pour cette date</div>';
                     return;
                 }
 
-                horairesDisponibles = horaires;
-                afficherHoraires(horaires);
+                afficherHoraires(data.horaires_base, data.horaires_reserves, data.current_date, data.current_time);
                 updateRecap();
             } catch (error) {
-                container.innerHTML =
-                    '<div class="text-center text-red-500 py-8">Erreur lors du chargement des créneaux</div>';
+                console.error('Erreur:', error);
+                container.innerHTML = '<div class="text-center text-red-500 py-8">Erreur lors du chargement des créneaux</div>';
             }
         }
 
         // Afficher les horaires
-        function afficherHoraires(horaires) {
+        function afficherHoraires(horairesBase, horairesReserves, currentDate, currentTime) {
             const container = document.getElementById('horairesContainer');
+            const selectedDate = document.getElementById('dateInput').value;
+            const isToday = selectedDate === currentDate;
 
             let html = '<div class="grid grid-cols-2 gap-3">';
-            horaires.forEach((horaire, index) => {
+            horairesBase.forEach((horaire) => {
+                // Vérifier si le créneau est réservé
+                const estReserve = horairesReserves.some(reserve =>
+                    reserve.debut === horaire.debut && reserve.fin === horaire.fin
+                );
+
+                // Vérifier si le créneau est passé (uniquement pour aujourd'hui)
+                const isPast = isToday && (
+                    horaire.fin < currentTime ||
+                    (horaire.debut < currentTime && horaire.fin > currentTime)
+                );
+
+                // Un créneau est disponible s'il n'est pas réservé OU s'il est passé
+                const isAvailable = !estReserve || isPast;
+
+                const disabledClass = !isAvailable ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:border-blue-300';
+                const bgClass = estReserve && !isPast ? 'bg-red-50' : 'bg-white';
+                const borderColor = estReserve && !isPast ? 'border-red-300' : 'border-gray-200';
+                const textColor = estReserve && !isPast ? 'text-red-600' : 'text-gray-900';
+
+                let statusText = '';
+                if (estReserve && !isPast) statusText = 'Réservé';
+                else if (isPast) statusText = 'Disponible';
+
                 html += `
-            <label class="relative flex items-center justify-center p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-300 transition-colors duration-200 horaire-item">
-                <input type="checkbox" class="sr-only horaire-checkbox"
-                       data-debut="${horaire.debut}"
-                       data-fin="${horaire.fin}"
-                       onchange="toggleHoraire(this)">
-                <div class="text-center">
-                    <div class="font-medium text-gray-900">${horaire.debut} - ${horaire.fin}</div>
-                </div>
-            </label>
-        `;
+                    <label class="relative flex items-center justify-center p-3 border-2 rounded-lg transition-all duration-200 horaire-item ${borderColor} ${bgClass} ${disabledClass}">
+                        <input type="checkbox" class="sr-only horaire-checkbox"
+                               data-debut="${horaire.debut}"
+                               data-fin="${horaire.fin}"
+                               onchange="toggleHoraire(this)"
+                               ${!isAvailable ? 'disabled' : ''}>
+                        <div class="text-center">
+                            <div class="font-medium ${textColor}">
+                                ${horaire.debut} - ${horaire.fin}
+                            </div>
+                            ${statusText ? `<div class="text-xs ${estReserve && !isPast ? 'text-red-500' : 'text-green-500'} mt-1">${statusText}</div>` : ''}
+                        </div>
+                    </label>
+                `;
             });
             html += '</div>';
 
@@ -313,6 +292,8 @@
 
         // Toggle horaire
         function toggleHoraire(checkbox) {
+            if (checkbox.disabled) return; // Ne rien faire si le créneau est indisponible
+
             const debut = checkbox.dataset.debut;
             const fin = checkbox.dataset.fin;
             const label = checkbox.closest('.horaire-item');
@@ -399,7 +380,7 @@
 
             // Bouton submit
             const submitBtn = document.getElementById('submitBtn');
-            const canSubmit = date && equipements.length > 0 && horairesSelectionnes.length > 0 && objectif.trim();
+            const canSubmit = date && equipements.length > 0 && horairesSelectionnes.length > 0;
             submitBtn.disabled = !canSubmit;
         }
 
@@ -412,10 +393,6 @@
             const equipementCheckboxes = document.querySelectorAll('.equipement-checkbox');
             equipementCheckboxes.forEach(checkbox => {
                 checkbox.checked = false;
-                const customCheckbox = checkbox.closest('label').querySelector('.checkbox-custom');
-                const checkIcon = customCheckbox.querySelector('.check-icon');
-                customCheckbox.classList.remove('bg-blue-600', 'border-blue-600');
-                checkIcon.classList.add('hidden');
             });
 
             // Réinitialiser les horaires
@@ -450,22 +427,6 @@
             document.getElementById('submitBtn').disabled = true;
         }
 
-        // Gestion des checkboxes personnalisées
-        document.addEventListener('change', function(e) {
-            if (e.target.classList.contains('equipement-checkbox')) {
-                const checkbox = e.target.closest('label').querySelector('.checkbox-custom');
-                const checkIcon = checkbox.querySelector('.check-icon');
-
-                if (e.target.checked) {
-                    checkbox.classList.add('bg-blue-600', 'border-blue-600');
-                    checkIcon.classList.remove('hidden');
-                } else {
-                    checkbox.classList.remove('bg-blue-600', 'border-blue-600');
-                    checkIcon.classList.add('hidden');
-                }
-            }
-        });
-
         // Soumission du formulaire
         document.getElementById('reservationForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -475,7 +436,7 @@
             const equipements = document.querySelectorAll('.equipement-checkbox:checked');
             const objectif = document.getElementById('objectif').value;
 
-            if (!date || equipements.length === 0 || horairesSelectionnes.length === 0 || !objectif.trim()) {
+            if (!date || equipements.length === 0 || horairesSelectionnes.length === 0) {
                 alert('Veuillez remplir tous les champs obligatoires.');
                 return;
             }
@@ -539,7 +500,7 @@
                 </div>
                 <div>
                     <span class="font-medium text-gray-700">Statut :</span>
-                    <span class="text-yellow-600 font-medium">${reservation.statut}</span>
+                    <span class="text-green-600 font-medium">${reservation.statut}</span>
                 </div>
                 <div class="md:col-span-2">
                     <span class="font-medium text-gray-700">Laboratoire :</span>

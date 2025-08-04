@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
             $table->date('date');
-            $table->string('objectif');
-            $table->enum('statut', ['en_attente', 'confirmée', 'annulée', 'terminée'])->default('en_attente');
+            $table->string('objectif')->nullable();
+            $table->enum('statut', ['en_attente', 'confirmée', 'annulée'])->default('en_attente');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('laboratoire_id')->constrained('laboratoires')->onDelete('cascade');
             $table->timestamps();

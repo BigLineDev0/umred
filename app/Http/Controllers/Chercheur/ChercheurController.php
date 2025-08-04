@@ -23,8 +23,7 @@ class ChercheurController extends Controller
             'en_attente' => $user->reservations()->where('statut', 'en_attente')->count(),
             'confirmees' => $user->reservations()->where('statut', 'confirmée')->count(),
             'annulees' => $user->reservations()->where('statut', 'annulée')->count(),
-            'terminees' => $user->reservations()->where('statut', 'terminée')->count(),
-            'equipements_utilises' => Equipement::count(),
+            'equipements_utilises' => Equipement::where('statut', 'disponible')->count(),
             'prochaine_reservation' => $user->reservations()
                 ->where('statut', 'confirmée')
                 ->where('date', '>=', now()->toDateString())
@@ -32,9 +31,17 @@ class ChercheurController extends Controller
                 ->first(),
         ];
 
+        // Récupération des 5 dernières réservations de l'utilisateur
        $recent_reservations = Reservation::with('laboratoire')
             ->where('user_id', $user->id)
-            ->orderByDesc('date')
+            ->latest()
+            ->take(5)
+            ->get();
+
+        // Récupération des réservations du jour
+        $today_reservations = Reservation::with('laboratoire')
+            ->whereDate('created_at', now()->toDateString())
+            ->latest()
             ->take(5)
             ->get();
 
@@ -49,7 +56,7 @@ class ChercheurController extends Controller
         //     ->take(5)
         //     ->get();
 
-        return view('chercheur.dashboard', compact('stats', 'recent_reservations'));
+        return view('chercheur.dashboard', compact('stats', 'recent_reservations', 'today_reservations'));
     }
 
     public function equipementsDisponibles()

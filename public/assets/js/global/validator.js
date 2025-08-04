@@ -41,21 +41,22 @@ class Validator
     // Permet de valider un nom composé de chaines de caractères
     static nameValidator(controlName, minlength, maxlength, value)
     {
-        let format = /^[A-Za-zÀ-ÿ '-]+$/;
+        // Autorise lettres, chiffres, espaces, et caractères spéciaux courants
+        let format = /^[A-Za-zÀ-ÿ0-9 '-.,;:_()]+$/;
         if (!value) {
             return { error : true, message : `${controlName} est obligatoire.` }
         }
 
-        if (!value.match(new RegExp(format))) {
-            return { error : true, message : `${controlName} ne doit contenir que des lettres.` }
+        if (!value.match(format)) {
+            return { error : true, message : `${controlName} ne doit contenir que des lettres, chiffres ou caractères spéciaux autorisés.` }
         }
 
         if (value.length < minlength) {
-            return {error : true, message : `${controlName} doit contenir au moins ${minlength} lettres.`}
+            return {error : true, message : `${controlName} doit contenir au moins ${minlength} caractères.`}
         }
 
         if (value.length > maxlength) {
-            return {error : true, message : `${controlName} ne doit pas contenir au plus ${maxlength} lettres.`}
+            return {error : true, message : `${controlName} doit contenir au plus ${maxlength} caractères.`}
         }
 
         if ((value != "") && (value.startsWith(" ") || value.endsWith(" "))) {
